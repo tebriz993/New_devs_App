@@ -243,9 +243,12 @@ export class SecureAPIClient {
    * Validate tenant ID format for security
    */
   private isValidTenantId(tenantId: string): boolean {
-    // Check for UUID format (basic validation)
+    if (typeof tenantId !== 'string' || tenantId.length === 0) return false;
+
+    // Accept both UUID format and slug-style IDs (e.g. "tenant-a")
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    return typeof tenantId === 'string' && tenantId.length > 0 && uuidRegex.test(tenantId);
+    const slugRegex = /^[a-z0-9][a-z0-9\-]{1,62}[a-z0-9]$/i;
+    return uuidRegex.test(tenantId) || slugRegex.test(tenantId);
   }
 
   /**
